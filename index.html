@@ -97,7 +97,9 @@
 	      var finish = this.selectionEnd;
 	      topWrapper = document.getElementById("topWrapper")
 	      if(start == finish && (this.value.indexOf("\n") == -1 || this.value.indexOf("\n") >= start) && topWrapper.children.length > hist){
+		  e.preventDefault();
 		  this.value = topWrapper.children[topWrapper.children.length-(hist++)-1].children[1].innerText;
+		  this.setSelectionRange(this.value.length,this.value.length);
 	      }
           }
 	  if(e.keyCode==40 || e.which==40){ // down
@@ -124,18 +126,10 @@
 	      
 	      hist = 0;
 
-	      
-	      var result;
-	      error = false;
-	      try{
-		  result = (1, eval)(code);
-	      } catch(e) {
-		  result = e;
-		  error = true;
-	      }
+	      // also, redirect console.log to our terminal emulator
+	      // this means we need to start building divs first
 
 
-	      
 	      document.getElementById("codeInput").value = "";
 	      var resultWrapper = document.createElement('div');
 	      resultWrapper.className = "resultWrapper";
@@ -148,8 +142,46 @@
 	      evaluated.innerText = code;
 	      resultWrapper.appendChild(resultPointer);
 	      resultWrapper.appendChild(evaluated);
-	      
 	      resultWrapper.appendChild(document.createElement("br"));
+
+	      
+	      oldLog = console.log;
+	      console.log = function(wrapper){
+		  return function(result){
+		      var resultArrow = document.createElement('label');
+		      resultArrow.className = "resultArrow";
+		      resultArrow.innerText = " ";
+		      var returned = document.createElement('span');
+		      returned.className = "returned";
+		      if(typeof result == "number" && !isNaN(result))
+			  returned.style.color = "#68A45D";
+		      if(typeof result == "string")
+			  returned.style.color = "#D7D7DB";
+		      if(typeof result == "boolean")
+			  returned.style.color = "#78C46A";
+		      if(typeof result == "function" || typeof result == "object")
+			  returned.style.color = "#75BFFF";
+		      if(error)
+			  returned.style.color = "red";
+		      returned.innerText = result;
+		      
+		      resultWrapper.appendChild(resultArrow);
+		      resultWrapper.appendChild(returned);
+		      resultWrapper.appendChild(document.createElement("br"));
+		  }
+	      }(resultWrapper);
+	      var result;
+	      error = false;
+	      try{
+		  result = (1, eval)(code);
+	      } catch(e) {
+		  result = e;
+		  error = true; // so errors work
+	      }
+	      console.log = oldLog;
+
+	      
+	      
 	      
 	      var resultArrow = document.createElement('label');
 	      resultArrow.className = "resultArrow";
@@ -158,6 +190,8 @@
 	      returned.className = "returned";
 	      if(typeof result == "number" && !isNaN(result))
 		  returned.style.color = "#68A45D";
+	      if(typeof result == "boolean")
+		  returned.style.color = "#78C46A";
 	      if(typeof result == "string")
 		  returned.style.color = "#D7D7DB", result = "\"" + result + "\"";
 	      if(typeof result == "function" || typeof result == "object")
