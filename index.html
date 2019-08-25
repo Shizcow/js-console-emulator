@@ -40,35 +40,54 @@
 	  -o-tab-size : 4;
           tab-size : 4;
       }
+      #topWrapper{
+	  overflow: auto;
+      }
       #bottomWrapper{
 	  position: absolute;
 	  display: flex;
 	  max-height: 100%;
-          height: 50%;
+	  min-height: 12pt;
 	  width:100%;
 	  bottom: 0;
       }
-      #topWrapper{
-      }
       .resultWrapper{
+	  width: 100%;
 	  background-color: #2A2A2E;
       }
+      .tableWrapper{
+	  display: table;
+      }
       .resultPointer{
+	  overflow: hidden;
+	  display: table-cell;
+	  white-space: pre;
 	  font-weight: bold;
 	  padding: 5px;
+	  padding-top: 0;
 	  color: #858587;
       }
       .evaluated{
+	  display: table-cell;
+	  word-wrap: break-word;
+	  width: 100%;
+	  white-space: pre-wrap;
 	  color: #939395;
       }
       .resultArrow{
+	  overflow: hidden;
+	  display: table-cell;
+	  white-space: pre;
 	  line-height: 12pt;
 	  font-size: 24pt;
 	  font-weight: bold;
 	  padding: 5px;
+	  padding-top: 0;
 	  color: #838385;
       }
       .returned{
+	  display: table-cell;
+	  white-space: pre-wrap;
 	  color: #78787B;
       }
     </style>
@@ -98,7 +117,7 @@
 	      topWrapper = document.getElementById("topWrapper")
 	      if(start == finish && (this.value.indexOf("\n") == -1 || this.value.indexOf("\n") >= start) && topWrapper.children.length > hist){
 		  e.preventDefault();
-		  this.value = topWrapper.children[topWrapper.children.length-(hist++)-1].children[1].innerText;
+		  this.value = topWrapper.children[topWrapper.children.length-(hist++)-1].children[0].children[1].innerText;
 		  this.setSelectionRange(this.value.length,this.value.length);
 	      }
           }
@@ -114,7 +133,7 @@
 		  if(hist == 0)
 		      this.value = "";
 		  else
-		      this.value = topWrapper.children[topWrapper.children.length-hist].children[1].innerText;
+		      this.value = topWrapper.children[topWrapper.children.length-hist].children[0].children[1].innerText;
 	      }
           }
 	  if((e.keyCode==13 || e.which==13) && !e.shiftKey){ // enter
@@ -133,21 +152,25 @@
 	      document.getElementById("codeInput").value = "";
 	      var resultWrapper = document.createElement('div');
 	      resultWrapper.className = "resultWrapper";
-	      
+
+	      var evaluatedWrapper = document.createElement('div');
+	      evaluatedWrapper.className = "tableWrapper";
 	      var resultPointer = document.createElement('label');
 	      resultPointer.className = "resultPointer";
 	      resultPointer.innerText = ">>";
 	      var evaluated = document.createElement('span');
 	      evaluated.className = "evaluated";
 	      evaluated.innerText = code;
-	      resultWrapper.appendChild(resultPointer);
-	      resultWrapper.appendChild(evaluated);
-	      resultWrapper.appendChild(document.createElement("br"));
+	      evaluatedWrapper.appendChild(resultPointer);
+	      evaluatedWrapper.appendChild(evaluated);
+	      resultWrapper.appendChild(evaluatedWrapper);
 
 	      
 	      oldLog = console.log;
 	      console.log = function(wrapper){
 		  return function(result){
+		      var logWrapper = document.createElement('div');
+		      logWrapper.className = "tableWrapper";
 		      var resultArrow = document.createElement('label');
 		      resultArrow.className = "resultArrow";
 		      resultArrow.innerText = " ";
@@ -165,9 +188,9 @@
 			  returned.style.color = "red";
 		      returned.innerText = result;
 		      
-		      resultWrapper.appendChild(resultArrow);
-		      resultWrapper.appendChild(returned);
-		      resultWrapper.appendChild(document.createElement("br"));
+		      logWrapper.appendChild(resultArrow);
+		      logWrapper.appendChild(returned);
+		      resultWrapper.appendChild(logWrapper);
 		  }
 	      }(resultWrapper);
 	      var result;
@@ -183,9 +206,11 @@
 	      
 	      
 	      
+	      var logWrapper = document.createElement('div');
+	      logWrapper.className = "tableWrapper";
 	      var resultArrow = document.createElement('label');
 	      resultArrow.className = "resultArrow";
-	      resultArrow.innerText = "←";
+	      resultArrow.innerText = error ? " " : "←";
 	      var returned = document.createElement('span');
 	      returned.className = "returned";
 	      if(typeof result == "number" && !isNaN(result))
@@ -199,8 +224,9 @@
 	      if(error)
 		  returned.style.color = "red";
 	      returned.innerText = result;
-	      resultWrapper.appendChild(resultArrow);
-	      resultWrapper.appendChild(returned);
+	      logWrapper.appendChild(resultArrow);
+	      logWrapper.appendChild(returned);
+	      resultWrapper.appendChild(logWrapper);
 
 	      
 	      topWrapper.appendChild(resultWrapper);
@@ -210,8 +236,12 @@
 
       render = function(){
 	  document.getElementById("bottomWrapper").style.height = (document.body.offsetHeight - document.getElementById("topWrapper").offsetHeight) + "px";
+	  if(document.getElementById("topWrapper").offsetHeight+document.getElementById("bottomWrapper").offsetHeight > document.body.offsetHeight){
+	      
+	  }
       }
 
+      window.onresize = render;
       render();
     </script>
   </body>
