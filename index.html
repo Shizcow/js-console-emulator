@@ -34,7 +34,9 @@
 	  margin: 0;
 	  border: 0;
 	  padding: 0;
-	  padding-top: 5px;
+	  -moz-tab-size : 4;
+	  -o-tab-size : 4;
+          tab-size : 4;
       }
       #bottomWrapper{
 	  display: flex;
@@ -42,22 +44,30 @@
 	  width:100%;
       }
     </style>
-    <script>
-      // 
-      document.onkeydown = function (e) {
-	  e = e || window.event;
-	  switch (e.which || e.keyCode) {
-          case 13 : //Enter
-	      //document.getElementById("result").innerText = eval(document.getElementById("code").value);
-              break;
-	  }
-      }
-    </script>
   </head>
   <body>
+
+    
     <div id="bottomWrapper">
       <label id="pointer">>></label>
       <textarea id="codeInput"  spellcheck="false"></textarea>
     </div>
+
+    
+    <script>
+      document.getElementById("codeInput").onkeydown = function(e){
+	  if(e.keyCode==9 || e.which==9){ // tab
+              e.preventDefault();
+              var s = this.selectionStart;
+              this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+              this.selectionEnd = s+1; 
+          }
+	  if((e.keyCode==13 || e.which==13) && !e.shiftKey){
+              e.preventDefault();
+	      console.log(eval(document.getElementById("codeInput").value));
+	      document.getElementById("codeInput").value = "";
+          }
+      }
+    </script>
   </body>
 </html>
