@@ -8,6 +8,7 @@
           margin: 0px;
       }
       *{
+	  font-size: 12pt;
 	  font-family: Courier New;
       }
       body{
@@ -25,6 +26,7 @@
 	  color: #75BAFF;
 	  font-weight: bold;
 	  padding: 5px;
+	  padding-top: 0;
       }
       #codeInput{
 	  height: 100%;
@@ -39,14 +41,41 @@
           tab-size : 4;
       }
       #bottomWrapper{
+	  position: absolute;
 	  display: flex;
-          height: 100%;
+	  max-height: 100%;
+          height: 50%;
 	  width:100%;
+	  bottom: 0;
+      }
+      #topWrapper{
+      }
+      .resultWrapper{
+	  background-color: #2A2A2E;
+      }
+      .resultPointer{
+	  font-weight: bold;
+	  padding: 5px;
+	  color: #858587;
+      }
+      .evaluated{
+	  color: #939395;
+      }
+      .resultArrow{
+	  line-height: 12pt;
+	  font-size: 24pt;
+	  font-weight: bold;
+	  padding: 5px;
+	  color: #838385;
+      }
+      .returned{
+	  color: #78787B;
       }
     </style>
   </head>
   <body>
-
+    <div id="topWrapper">
+    </div>
     
     <div id="bottomWrapper">
       <label id="pointer">>></label>
@@ -55,6 +84,7 @@
 
     
     <script>
+      var hist = 0;
       document.getElementById("codeInput").onkeydown = function(e){
 	  if(e.keyCode==9 || e.which==9){ // tab
               e.preventDefault();
@@ -62,12 +92,93 @@
               this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
               this.selectionEnd = s+1; 
           }
-	  if((e.keyCode==13 || e.which==13) && !e.shiftKey){
+	  if(e.keyCode==38 || e.which==38){ // up
+	      var start = this.selectionStart;
+	      var finish = this.selectionEnd;
+	      topWrapper = document.getElementById("topWrapper")
+	      if(start == finish && (this.value.indexOf("\n") == -1 || this.value.indexOf("\n") >= start) && topWrapper.children.length > hist){
+		  this.value = topWrapper.children[topWrapper.children.length-(hist++)-1].children[1].innerText;
+	      }
+          }
+	  if(e.keyCode==40 || e.which==40){ // down
+	      var start = this.selectionStart;
+	      var finish = this.selectionEnd;
+	      topWrapper = document.getElementById("topWrapper")
+	      if(start == finish && (this.value.lastIndexOf("\n") == -1 || this.value.lastIndexOf("\n") < start)){
+		  e.preventDefault();
+		  --hist;
+		  if(hist<0)
+		      hist = 0;
+		  if(hist == 0)
+		      this.value = "";
+		  else
+		      this.value = topWrapper.children[topWrapper.children.length-hist].children[1].innerText;
+	      }
+          }
+	  if((e.keyCode==13 || e.which==13) && !e.shiftKey){ // enter
               e.preventDefault();
-	      console.log(eval(document.getElementById("codeInput").value));
+	      var code = document.getElementById("codeInput").value;
+
+	      if(code == "")
+		  return;
+	      
+	      hist = 0;
+
+	      
+	      var result;
+	      error = false;
+	      try{
+		  result = (1, eval)(code);
+	      } catch(e) {
+		  result = e;
+		  error = true;
+	      }
+
+
+	      
 	      document.getElementById("codeInput").value = "";
+	      var resultWrapper = document.createElement('div');
+	      resultWrapper.className = "resultWrapper";
+	      
+	      var resultPointer = document.createElement('label');
+	      resultPointer.className = "resultPointer";
+	      resultPointer.innerText = ">>";
+	      var evaluated = document.createElement('span');
+	      evaluated.className = "evaluated";
+	      evaluated.innerText = code;
+	      resultWrapper.appendChild(resultPointer);
+	      resultWrapper.appendChild(evaluated);
+	      
+	      resultWrapper.appendChild(document.createElement("br"));
+	      
+	      var resultArrow = document.createElement('label');
+	      resultArrow.className = "resultArrow";
+	      resultArrow.innerText = "←";
+	      var returned = document.createElement('span');
+	      returned.className = "returned";
+	      if(typeof result == "number" && !isNaN(result))
+		  returned.style.color = "#68A45D";
+	      if(typeof result == "string")
+		  returned.style.color = "#D7D7DB", result = "\"" + result + "\"";
+	      if(typeof result == "function" || typeof result == "object")
+		  returned.style.color = "#75BFFF";
+	      if(error)
+		  returned.style.color = "red";
+	      returned.innerText = result;
+	      resultWrapper.appendChild(resultArrow);
+	      resultWrapper.appendChild(returned);
+
+	      
+	      topWrapper.appendChild(resultWrapper);
+	      render();
           }
       }
+
+      render = function(){
+	  document.getElementById("bottomWrapper").style.height = (document.body.offsetHeight - document.getElementById("topWrapper").offsetHeight) + "px";
+      }
+
+      render();
     </script>
   </body>
 </html>
