@@ -44,6 +44,7 @@
 	  overflow: auto;
       }
       #bottomWrapper{
+	  background-color: #0C0C0D;
 	  position: absolute;
 	  display: flex;
 	  max-height: 100%;
@@ -98,7 +99,7 @@
     
     <div id="bottomWrapper">
       <label id="pointer">>></label>
-      <textarea id="codeInput"  spellcheck="false"></textarea>
+      <textarea id="codeInput" onkeyup="render()" spellcheck="false"></textarea>
     </div>
 
     
@@ -231,14 +232,31 @@
 	      
 	      topWrapper.appendChild(resultWrapper);
 	      render();
+	      document.getElementById("topWrapper").scrollTop = document.getElementById("topWrapper").scrollHeight;
           }
       }
 
+      var prevScrollHeight;
       render = function(){
-	  document.getElementById("bottomWrapper").style.height = (document.body.offsetHeight - document.getElementById("topWrapper").offsetHeight) + "px";
-	  if(document.getElementById("topWrapper").offsetHeight+document.getElementById("bottomWrapper").offsetHeight > document.body.offsetHeight){
-	      
+	  codeInput = document.getElementById("codeInput");
+	  bottomWrapper = document.getElementById("bottomWrapper");
+	  topWrapper = document.getElementById("topWrapper");
+	  
+	  bottomWrapper.style.height = (document.body.offsetHeight - topWrapper.offsetHeight) + "px";
+	  codeInput.style.overflowY = "hidden";
+	  if(topWrapper.scrollHeight+codeInput.scrollHeight > document.body.offsetHeight && codeInput.scrollHeight != prevScrollHeight){
+	      bottomWrapper.style.height = "14pt";
+	      bottomWrapper.style.height = (codeInput.scrollHeight)+'px';
+	      topWrapper.style.height = window.innerHeight-bottomWrapper.offsetHeight + "px";
+	      if(topWrapper.offsetHeight < 19){ // need to start scrolling on input
+		  topWrapper.style.height = "14pt";
+		  bottomWrapper.style.height = (document.body.offsetHeight - topWrapper.offsetHeight) + "px";
+		  codeInput.style.overflowY = "scroll";
+		  codeInput.blur();
+		  codeInput.focus();
+	      }
 	  }
+	  prevScrollHeight = codeInput.scrollHeight;
       }
 
       window.onresize = render;
