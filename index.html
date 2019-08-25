@@ -2,21 +2,44 @@
 <html>
   <head>
     <meta charset="utf-8"/>
-    <style>
+    <style type="text/css">
+      html, body {
+          height: 100%;
+          margin: 0px;
+      }
       *{
 	  font-family: Courier New;
       }
       body{
 	  background-color: #0C0C0D;
       }
+
+      input {
+	  width: 100%;
+	  border: 0;  
+	  padding: 0;
+      }
+      
       #pointer{
+	  float: left;
 	  color: #75BAFF;
 	  font-weight: bold;
+	  padding: 5px;
       }
       #codeInput{
-	  color: gray;
+	  height: 100%;
+	  width: 100%;
+	  color: #906FC7;
 	  background-color: #000000;
+	  margin: 0;
 	  border: 0;
+	  padding: 0;
+	  padding-top: 5px;
+      }
+      #bottomWrapper{
+	  display: flex;
+          height: 100%;
+	  width:100%;
       }
     </style>
     <script>
@@ -32,9 +55,9 @@
     </script>
   </head>
   <body>
-    <div id="pointerAligner">
-      <span id="pointer">>></span>
-      <input type="text" id="codeInput">
+    <div id="bottomWrapper">
+      <label id="pointer">>></label>
+      <textarea id="codeInput"  spellcheck="false"></textarea>
     </div>
   </body>
 </html>
