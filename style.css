@@ -65,8 +65,8 @@ input {
     color: #858587;
 }
 .evaluated{
+    word-break: break-word;
     display: table-cell;
-    word-wrap: break-word;
     width: 100%;
     white-space: pre-wrap;
     color: #939395;
@@ -83,6 +83,7 @@ input {
     color: #838385;
 }
 .returned{
+    word-break: break-word;
     display: table-cell;
     white-space: pre-wrap;
     color: #78787B;
