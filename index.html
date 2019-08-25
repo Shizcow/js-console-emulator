@@ -1,92 +1,40 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8"/>
     <style>
-      body {
-	  background-color: #DDD;
+      *{
+	  font-family: Courier New;
       }
-      #switch {
-	  position: relative;
-	  display: inline-block;
-	  width: 62px;
-	  height: 34px;
+      body{
+	  background-color: #0C0C0D;
       }
-
-      #switch input {
-	  opacity: 0;
-	  width: 0;
-	  height: 0;
+      #pointer{
+	  color: #75BAFF;
+	  font-weight: bold;
       }
-
-      .slider {
-	  position: absolute;
-	  cursor: pointer;
-	  top: 0;
-	  left: 0;
-	  right: 0;
-	  bottom: 0;
-	  background-color: #aaa;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	  border-radius: 34px;
+      #codeInput{
+	  color: gray;
+	  background-color: #000000;
+	  border: 0;
       }
-
-      .slider:before {
-	  position: absolute;
-	  content: "";
-	  width: 28px;
-	  left: 2px;
-	  bottom: 2px;
-	  top: 2px;
-	  background-color: white;
-	  -webkit-transition: .4s;
-	  transition: .4s;
-	  border-radius: 50%;
-      }
-
-      input:checked + .slider {
-	  background-color: #333;
-      }
-
-      input:focus + .slider {
-	  box-shadow: 0 0 1px #333;
-      }
-
-      input:checked + .slider:before {
-	  -webkit-transform: translateX(30px);
-	  -ms-transform: translateX(30px);
-	  transform: translateX(30px);
-      }
-
     </style>
+    <script>
+      // 
+      document.onkeydown = function (e) {
+	  e = e || window.event;
+	  switch (e.which || e.keyCode) {
+          case 13 : //Enter
+	      //document.getElementById("result").innerText = eval(document.getElementById("code").value);
+              break;
+	  }
+      }
+    </script>
   </head>
   <body>
-    <h1 style="font-weight: bold; font-family: Times;">
-      Did you know you can imbed iframes in Canvas submissions?
-    </h1>
-    <p style="font-family: Times;">
-      Here's an example of some of the stuff you can do
-    </p>
-    
-    <br>
-    <span>The virgin png</span><br>
-    <img src="https://i.kym-cdn.com/photos/images/newsfeed/001/050/209/b01.png" style="width: 100%;">
-    <br>
-    <span>The chad animated GIF</span>
-    <img src="https://media1.tenor.com/images/d7b9803b5b748984983f43ade56d2801/tenor.gif?itemid=4831688" style="width: 100%;">
-    <br>
-    <span>
-      We've also got interactive elements
-    </span>
-    <br>
-    <br>
-    <div style="height: 34px;">
-      <span style="float: left; line-height: 34px; padding-right: 10px;">
-	We've got our boi the slider:
-      </span>
-      <label id="switch" style="float: left;">
-	<input onclick="change_style(this);" type="checkbox" id="styleSlider">
-	<span class="slider round"></span>
-      </label>
+    <div id="pointerAligner">
+      <span id="pointer">>></span>
+      <input type="text" id="codeInput">
     </div>
   </body>
 </html>
