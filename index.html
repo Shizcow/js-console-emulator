@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <div class="resultWrapper tableWrapper resultPointer evaluated resultArrow returned" style="display: none;"></div> <!-- fixes ghpages issues -->
     <div id="topWrapper">
     </div>
     
@@ -55,6 +54,7 @@
 
 	      if(code == "")
 		  return;
+	      topWrapper = document.getElementById("topWrapper");
 	      
 	      hist = 0;
 
@@ -79,7 +79,7 @@
 	      resultWrapper.appendChild(evaluatedWrapper);
 
 	      
-	      oldLog = console.log;
+	      var oldLog = console.log;
 	      console.log = function(wrapper){
 		  return function(result){
 		      var logWrapper = document.createElement('div');
@@ -106,6 +106,12 @@
 		      resultWrapper.appendChild(logWrapper);
 		  }
 	      }(resultWrapper);
+	      toClear = false;
+	      clear = function(){
+		  toClear = true;
+		  while(topWrapper.firstChild)
+		      topWrapper.removeChild(topWrapper.firstChild);
+	      }
 	      var result;
 	      error = false;
 	      try{
@@ -115,7 +121,8 @@
 		  error = true; // so errors work
 	      }
 	      console.log = oldLog;
-
+	      if(toClear)
+		  return;
 	      
 	      
 	      
