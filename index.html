@@ -267,7 +267,6 @@
           }
       }
 
-      var prevScrollHeight;
       render = function(){
 	  codeInput = document.getElementById("codeInput");
 	  bottomWrapper = document.getElementById("bottomWrapper");
@@ -275,7 +274,7 @@
 	  
 	  bottomWrapper.style.height = (document.body.offsetHeight - topWrapper.offsetHeight) + "px";
 	  codeInput.style.overflowY = "hidden";
-	  if(topWrapper.scrollHeight+codeInput.scrollHeight > document.body.offsetHeight && codeInput.scrollHeight != prevScrollHeight){
+	  if(topWrapper.scrollHeight+codeInput.scrollHeight > document.body.offsetHeight/* && codeInput.scrollHeight != prevScrollHeight*/){
 	      bottomWrapper.style.height = "14pt";
 	      bottomWrapper.style.height = (codeInput.scrollHeight)+'px';
 	      topWrapper.style.height = window.innerHeight-bottomWrapper.offsetHeight + "px";
@@ -287,7 +286,6 @@
 		  codeInput.focus();
 	      }
 	  }
-	  prevScrollHeight = codeInput.scrollHeight;
       }
 
       window.onresize = render;
