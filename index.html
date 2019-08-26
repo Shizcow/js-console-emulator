@@ -15,6 +15,60 @@
 
     
     <script>
+      // returned DOM code, wrapped all up
+      function stylize(innerVar){
+	  var wrapper = document.createElement('span');
+	  wrapper.style.color = "#78787B";
+	  switch(typeof innerVar){
+	  case "boolean":
+	      wrapper.innerText = innerVar;
+	      wrapper.style.color = "#78C46A";
+	      break;
+	  case "string":
+	      wrapper.innerText = "\"" + innerVar + "\"";
+	      wrapper.style.color = "#D7D7DB";
+	      break;
+	  case "function":
+	  case "object":
+	      if(innerVar === null){
+		  wrapper.innerText = "null";
+	      } else if (!Array.isArray(innerVar)){
+		  wrapper.style.color = "#75BFFF";
+		  wrapper.innerText = innerVar;
+	      } else { // parse & descend
+		  var tmp = document.createElement("span");
+		  tmp.style.color = "#75BFFF";
+		  tmp.innerText = "[ ";
+		  wrapper.appendChild(tmp);
+
+		  for(let i = 0; i<innerVar.length; ++i){
+		      wrapper.appendChild(stylize(innerVar[i]));
+		      if(i == innerVar.length-1)
+			  break;
+		      tmp = document.createElement("span");
+		      tmp.style.color = "#D6D6DA";
+		      tmp.innerText = ", ";
+		      wrapper.appendChild(tmp);
+		  }
+		  
+		  tmp = document.createElement("span");
+		  tmp.style.color = "#75BFFF";
+		  tmp.innerText = " ]";
+		  wrapper.appendChild(tmp);
+	      }
+	      break;
+	  case "number":
+	      if(!isNaN(innerVar)){
+		  wrapper.innerText = innerVar;
+		  wrapper.style.color = "#86DE74";
+		  break;
+	      } // if NaN, fall through, color is in css class
+	  default:
+	      wrapper.innerText = innerVar;
+	  }
+	  return wrapper;
+      }
+      
       var hist = 0;
       document.getElementById("codeInput").onkeydown = function(e){
 	  if(e.keyCode==9 || e.which==9){ // tab
@@ -131,19 +185,9 @@
 	      var resultArrow = document.createElement('label');
 	      resultArrow.className = "resultArrow";
 	      resultArrow.innerText = error ? " " : "←";
-	      var returned = document.createElement('span');
-	      returned.className = "returned";
-	      if(typeof result == "number" && !isNaN(result))
-		  returned.style.color = "#68A45D";
-	      if(typeof result == "boolean")
-		  returned.style.color = "#78C46A";
-	      if(typeof result == "string")
-		  returned.style.color = "#D7D7DB", result = "\"" + result + "\"";
-	      if(typeof result == "function" || typeof result == "object")
-		  returned.style.color = "#75BFFF";
+	      var returned = stylize(result);
 	      if(error)
 		  returned.style.color = "red";
-	      returned.innerText = result;
 	      logWrapper.appendChild(resultArrow);
 	      logWrapper.appendChild(returned);
 	      resultWrapper.appendChild(logWrapper);
