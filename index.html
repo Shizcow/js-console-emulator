@@ -97,6 +97,7 @@
       }
       
       var hist = 0;
+      var histBottom = "";
       document.getElementById("codeInput").onkeydown = function(e){
 	  if(e.keyCode==9 || e.which==9){ // tab
               e.preventDefault();
@@ -110,6 +111,8 @@
 	      topWrapper = document.getElementById("topWrapper")
 	      if(start == finish && (this.value.indexOf("\n") == -1 || this.value.indexOf("\n") >= start) && topWrapper.children.length > hist){
 		  e.preventDefault();
+		  if(hist == 0)
+		      histBottom = this.value;
 		  this.value = topWrapper.children[topWrapper.children.length-(hist++)-1].children[0].children[1].innerText;
 		  this.setSelectionRange(this.value.length,this.value.length);
 	      }
@@ -124,7 +127,7 @@
 		  if(hist<0)
 		      hist = 0;
 		  if(hist == 0)
-		      this.value = "";
+		      this.value = histBottom;
 		  else
 		      this.value = topWrapper.children[topWrapper.children.length-hist].children[0].children[1].innerText;
 	      }
