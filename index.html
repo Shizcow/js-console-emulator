@@ -32,10 +32,7 @@
 	  case "object":
 	      if(innerVar === null){
 		  wrapper.innerText = "null";
-	      } else if (!Array.isArray(innerVar)){
-		  wrapper.style.color = "#75BFFF";
-		  wrapper.innerText = innerVar;
-	      } else { // parse & descend
+	      } else if (Array.isArray(innerVar)){
 		  var tmp = document.createElement("span");
 		  tmp.style.color = "#75BFFF";
 		  tmp.innerText = "[ ";
@@ -55,6 +52,36 @@
 		  tmp.style.color = "#75BFFF";
 		  tmp.innerText = " ]";
 		  wrapper.appendChild(tmp);
+	      } else { // "normal" object
+		  var tmp = document.createElement("span");
+		  tmp.style.color = "#75BFFF";
+		  tmp.innerText = "{ ";
+		  wrapper.appendChild(tmp);
+
+		  pairs = Object.entries(innerVar);
+		  
+		  for(let i = 0; i<pairs.length; ++i){
+		      tmp = document.createElement("span");
+		      tmp.style.color = "#75BFFF";
+		      tmp.innerText = pairs[i][0];
+		      wrapper.appendChild(tmp);
+		      tmp = document.createElement("span");
+		      tmp.innerText = ": ";
+		      wrapper.appendChild(tmp);
+		      wrapper.appendChild(stylize(pairs[i][1]));
+		      if(i == pairs.length-1)
+			  break;
+		      tmp = document.createElement("span");
+		      tmp.style.color = "#D6D6DA";
+		      tmp.innerText = ", ";
+		      wrapper.appendChild(tmp);
+		  }
+		  
+		  tmp = document.createElement("span");
+		  tmp.style.color = "#75BFFF";
+		  tmp.innerText = " }";
+		  wrapper.appendChild(tmp);
+		  
 	      }
 	      break;
 	  case "number":
@@ -112,9 +139,39 @@
 	      
 	      hist = 0;
 
+	      preFormattedCode = code; // don't show the user our hacks
+
+	      // before we do literally anything, we need to parse the input a bit
+	      // reason being: classes don't declare in evals
+	      // unless they're wrapped in parens
+	      // so we need to find every instance of 'class', and go until {}
+	      for(let i=0; i<code.length; ++i){
+		  if(code.substr(i, 6) == "class " && (code[i-1] == undefined || " \t\n{}()".includes(code[i-1]))){
+		      let j = code.slice(i).indexOf("{");
+		      if(j == -1)
+			  break; // missing paren error
+		      className = code.substr(i+6).split("{")[0];
+		      j = code.slice(i).indexOf("{")+i+1;
+		      for(let parens = 1; parens > 0;){
+			  if(code[j] == undefined)
+			      break; // unmatched paren
+			  iOpen = code.slice(j).indexOf("{");
+			  iClosed = code.slice(j).indexOf("}");
+			  if(iOpen == -1 || iClosed < iOpen){
+			      parens--;
+			      j += iClosed+1;
+			  } else {
+			      parens++;
+			      j += iOpen+1;
+			  }
+		      }
+		      i = j;
+		      code = code.slice(0, i) + "; window." + className + " = " + className + "; undefined;" + code.slice(i); // undefined for consistant behavior
+		  }
+	      }
+
 	      // also, redirect console.log to our terminal emulator
 	      // this means we need to start building divs first
-
 
 	      document.getElementById("codeInput").value = "";
 	      var resultWrapper = document.createElement('div');
@@ -127,7 +184,7 @@
 	      resultPointer.innerText = ">>";
 	      var evaluated = document.createElement('span');
 	      evaluated.className = "evaluated";
-	      evaluated.innerText = code;
+	      evaluated.innerText = preFormattedCode;
 	      evaluatedWrapper.appendChild(resultPointer);
 	      evaluatedWrapper.appendChild(evaluated);
 	      resultWrapper.appendChild(evaluatedWrapper);
