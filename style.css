@@ -62,6 +62,7 @@ input {
     font-weight: bold;
     padding: 5px;
     padding-top: 0;
+    padding-bottom: 0;
     color: #858587;
 }
 .evaluated{
@@ -83,6 +84,7 @@ input {
     font-weight: bold;
     padding: 5px;
     padding-top: 0;
+    padding-bottom: 0;
     color: #838385;
 }
 .returned{

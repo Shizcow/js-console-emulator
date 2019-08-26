@@ -198,19 +198,7 @@
 		      var resultArrow = document.createElement('label');
 		      resultArrow.className = "resultArrow";
 		      resultArrow.innerText = " ";
-		      var returned = document.createElement('span');
-		      returned.className = "returned";
-		      if(typeof result == "number" && !isNaN(result))
-			  returned.style.color = "#68A45D";
-		      if(typeof result == "string")
-			  returned.style.color = "#D7D7DB";
-		      if(typeof result == "boolean")
-			  returned.style.color = "#78C46A";
-		      if(typeof result == "function" || typeof result == "object")
-			  returned.style.color = "#75BFFF";
-		      if(error)
-			  returned.style.color = "red";
-		      returned.innerText = result;
+		      var returned = stylize(result);
 		      
 		      logWrapper.appendChild(resultArrow);
 		      logWrapper.appendChild(returned);
@@ -235,16 +223,16 @@
 	      if(toClear)
 		  return;
 	      
-	      
-	      
 	      var logWrapper = document.createElement('div');
 	      logWrapper.className = "tableWrapper";
 	      var resultArrow = document.createElement('label');
 	      resultArrow.className = "resultArrow";
 	      resultArrow.innerText = error ? " " : "←";
 	      var returned = stylize(result);
-	      if(error)
+	      if(error){
+		  returned.innerText = result;
 		  returned.style.color = "red";
+	      }
 	      logWrapper.appendChild(resultArrow);
 	      logWrapper.appendChild(returned);
 	      resultWrapper.appendChild(logWrapper);
