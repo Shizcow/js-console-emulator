@@ -19,7 +19,7 @@ input {
 
 #pointer{
     float: left;
-    color: #75BAFF;
+    color: #858587;
     font-weight: bold;
     padding: 5px;
     padding-top: 0;
@@ -63,7 +63,7 @@ input {
     padding: 5px;
     padding-top: 0;
     padding-bottom: 0;
-    color: #858587;
+    color: #A0A0A1;
 }
 .evaluated{
     word-break: break-word;

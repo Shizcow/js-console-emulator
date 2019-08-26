@@ -98,6 +98,26 @@
       
       var hist = 0;
       var histBottom = "";
+      function focusBox(){
+	  var text = "";
+	  if (typeof window.getSelection != "undefined") {
+              text = window.getSelection().toString();
+	  } else if (typeof document.selection != "undefined" && document.selection.type == "Text") {
+              text = document.selection.createRange().text;
+	  }
+	  
+	  pointer = document.getElementById("pointer");
+	  codeInput = document.getElementById("codeInput");
+	  if(document.activeElement === codeInput || text == "") {
+	      codeInput.focus();
+	      pointer.style.color = "#75BAFF";
+	  } else {
+	      pointer.style.color = "#858587";
+	  }
+      }
+      document.onmouseup = focusBox;
+      document.onkeyup = focusBox;
+      
       document.getElementById("codeInput").onkeydown = function(e){
 	  if(e.keyCode==9 || e.which==9){ // tab
               e.preventDefault();
