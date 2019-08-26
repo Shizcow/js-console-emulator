@@ -1,3 +1,3 @@
-# iframe-test
+# js-console-emulator
 
-Turns out you can imbed iframes in Canvas posts. I'm testing out just how much can be done.
+A simple JS console emulator. Based off of the firefox dev console. Meant to be imbeded in an iframe for memes.
