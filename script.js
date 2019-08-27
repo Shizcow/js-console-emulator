@@ -6,13 +6,13 @@ function stylize_code(code){
 
     for(let i = 0; i<code.length; ++i){
 	var token = "";
-	if(token = code.substr(i).match(/^[\{\}\{\}\(\)\,\;\\\:\/\~]/)){
+	if(token = code.substr(i).match(/^(\s*[\[\]\{\}\{\}\(\)\,\;\\\:\/\~]\s*)+/)){
 	    var paren = document.createElement('span');
 	    paren.innerText = token[0];
 	    paren.style.color = "#D7D7DB";
 	    tokens.push(paren);
 	    i += token[0].length-1;
-	} else if(token = code.substr(i).match(/^[\!\@\-\=\<\>\|\?\%\^\&\*]/)){
+	} else if(token = code.substr(i).match(/^(\s*[\!\@\-\=\<\>\|\?\%\^\&\*]\s*)+/)){
 	    var operator = document.createElement('span');
 	    operator.innerText = token[0];
 	    operator.style.color = "#B1B1B3";
@@ -24,44 +24,41 @@ function stylize_code(code){
 	    modifier.style.color = "#FC7BE6";
 	    tokens.push(modifier);
 	    i += token[0].length-1;
-	} else if(code[i] == "\n"){
-	    tokens.push(document.createElement('br'));
-	} else if(token = code.substr(i).match(/^\'.*?\'|^\".*?\"/)){ // need to paint all of string white
+	} else if(token = code.substr(i).match(/^(\s*?\"[\s\S]*?\"\s*?)+/)){ // string & expansion
 	    var stringWrapper = document.createElement('span');
 	    stringWrapper.innerText = token[0];
 	    stringWrapper.style.color = "#6B89FF";
 	    tokens.push(stringWrapper);
 	    i += token[0].length-1;
-	} else if(token = ["true", "false", "null", "undefined", "class", "function", "let", "var", "return", "yield"].filter(el => code.substr(i, el.length) == el), token.length){ // bools & keywords
+	} else if(token = code.substr(i).match(/^(\s*(true|false|null|undefined|class|function|let|var|return|yield)\s*)+/)){
 	    var boolWrapper = document.createElement('span');
 	    boolWrapper.innerText = token[0];
 	    boolWrapper.style.color = "#E170CF";
 	    tokens.push(boolWrapper);
 	    i += boolWrapper.innerText.length-1;
-	} else if(token = code.substr(i).match(/^[A-Za-z\$\_][A-Za-z1-9\$\_]*/)){ // identifier
+	} else if(token = code.substr(i).match(/^(\s*[A-Za-z\$\_][A-Za-z1-9\$\_]*\s*)+/)){ // identifier
 	    token = token[0];
 	    var identifier = document.createElement('span');
 	    identifier.innerText = token;
 	    identifier.style.color = "#906FC7";
 	    tokens.push(identifier);
 	    i += identifier.innerText.length;
-	    while(token = code.substr(i).match(/^\s*\./)){ // property
+	    while(token = code.substr(i).match(/^(\s*\.\s*)+/)){ // property
 		var point = document.createElement('span');
 		point.innerText = token;
 		point.style.color = "#D7D7DB";
 		tokens.push(point);
 		i += point.innerText.length;
-		token = code.substr(i).match(/^\s*[A-Za-z\$\_][A-Za-z1-9\$\_]*/); // following property, if applicable
-		if(token && token.length){
+		if(token = code.substr(i).match(/^\s*[A-Za-z\$\_][A-Za-z1-9\$\_]*\s*/)){ // following property, if applicable - no expansion
 		    var property = document.createElement('span');
-		    property.innerText = token;
+		    property.innerText = token[0];
 		    property.style.color = "#86DE74";
 		    tokens.push(property);
 		    i += property.innerText.length;
 		}
 	    }
 	    --i;
-	} else if(token = code.substr(i).match(/^[1-9]*[\.]?[1-9]+/)){
+	} else if(token = code.substr(i).match(/^(\s*[1-9]*[\.]?[1-9]+\s*)+/)){
 	    var number = document.createElement('span');
 	    number.innerText = token[0];
 	    number.style.color = "#6B89FF";
