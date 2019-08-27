@@ -6,7 +6,13 @@ function stylize_code(code){
 
     for(let i = 0; i<code.length; ++i){
 	var token = "";
-	if(token = code.substr(i).match(/^(\s*[\[\]\{\}\{\}\(\)\,\;\\\:\/\~]\s*)+/)){
+	if(token = code.substr(i).match(/^\/\*[\s\S]*?\*\/|^\s*\/\/.*\s*/)){ // single line comment
+	    var comment = document.createElement('span');
+	    comment.innerText = token[0];
+	    comment.style.color = "#858587";
+	    tokens.push(comment);
+	    i += token[0].length-1;
+	} else if(token = code.substr(i).match(/^(\s*[\[\]\{\}\{\}\(\)\,\;\\\:\/\~]\s*)+/)){
 	    var paren = document.createElement('span');
 	    paren.innerText = token[0];
 	    paren.style.color = "#D7D7DB";
