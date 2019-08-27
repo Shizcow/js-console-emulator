@@ -5,30 +5,33 @@ function stylize_code(code){
     var tokens = []; // tokenizer
 
     for(let i = 0; i<code.length; ++i){
-	if("[]{}(),;\\,:/~".includes(code[i])){
+	var token = "";
+	if(token = code.substr(i).match(/^[\{\}\{\}\(\)\,\;\\\:\/\~]/)){
 	    var paren = document.createElement('span');
-	    paren.innerText = code[i];
+	    paren.innerText = token[0];
 	    paren.style.color = "#D7D7DB";
 	    tokens.push(paren);
-	} else if("!@-=+<>|?%^&*_".includes(code[i])){
+	    i += token[0].length-1;
+	} else if(token = code.substr(i).match(/^[\!\@\-\=\<\>\|\?\%\^\&\*]/)){
 	    var operator = document.createElement('span');
-	    operator.innerText = code[i];
+	    operator.innerText = token[0];
 	    operator.style.color = "#B1B1B3";
 	    tokens.push(operator);
-	} else if("#".includes(code[i])){
+	    i += token[0].length-1;
+	} else if(token = code.substr(i).match("^#")){
 	    var modifier = document.createElement('span');
-	    modifier.innerText = code[i];
+	    modifier.innerText = token[0];
 	    modifier.style.color = "#FC7BE6";
 	    tokens.push(modifier);
+	    i += token[0].length-1;
 	} else if(code[i] == "\n"){
 	    tokens.push(document.createElement('br'));
-	} else if("\"\'".includes(code[i])){ // need to paint all of string white
-	    delimeter = code[i];
+	} else if(token = code.substr(i).match(/^\'.*?\'|^\".*?\"/)){ // need to paint all of string white
 	    var stringWrapper = document.createElement('span');
-	    stringWrapper.innerText = code[i] + code.substr(i+1).split(code[i])[0] + code[i];
+	    stringWrapper.innerText = token[0];
 	    stringWrapper.style.color = "#6B89FF";
 	    tokens.push(stringWrapper);
-	    i += stringWrapper.innerText.length-1;
+	    i += token[0].length-1;
 	} else if(token = ["true", "false", "null", "undefined", "class", "function", "let", "var", "return", "yield"].filter(el => code.substr(i, el.length) == el), token.length){ // bools & keywords
 	    var boolWrapper = document.createElement('span');
 	    boolWrapper.innerText = token[0];
@@ -60,10 +63,10 @@ function stylize_code(code){
 	    --i;
 	} else if(token = code.substr(i).match(/^[1-9]*[\.]?[1-9]+/)){
 	    var number = document.createElement('span');
-	    number.innerText = token;
+	    number.innerText = token[0];
 	    number.style.color = "#6B89FF";
 	    tokens.push(number);
-	    i += number.innerText.length-1;
+	    i += token[0].length-1;
 	} else {
 	    var def = document.createElement('span');
 	    def.innerText = code[i];
