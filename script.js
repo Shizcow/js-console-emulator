@@ -12,7 +12,7 @@ function stylize_code(code){
 	    paren.style.color = "#D7D7DB";
 	    tokens.push(paren);
 	    i += token[0].length-1;
-	} else if(token = code.substr(i).match(/^(\s*[\!\@\-\=\<\>\|\?\%\^\&\*]\s*)+/)){
+	} else if(token = code.substr(i).match(/^(\s*[\!\@\+\-\=\<\>\|\?\%\^\&\*]\s*)+/)){
 	    var operator = document.createElement('span');
 	    operator.innerText = token[0];
 	    operator.style.color = "#B1B1B3";
@@ -45,7 +45,7 @@ function stylize_code(code){
 	    i += identifier.innerText.length;
 	    while(token = code.substr(i).match(/^(\s*\.\s*)+/)){ // property
 		var point = document.createElement('span');
-		point.innerText = token;
+		point.innerText = token[0];
 		point.style.color = "#D7D7DB";
 		tokens.push(point);
 		i += point.innerText.length;
