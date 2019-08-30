@@ -264,7 +264,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 		    }
 		}
 		i = j;
-		code = "(function(){" + code.slice(0, i) + "; return window." + className + " = " + className + "}())"; // undefined for consistant behavior
+		code = "(function(){" + code.slice(0, i) + "; return window." + className + " = " + className + ";}())";
 	    }
 	}
 
