@@ -244,7 +244,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 		paren_level++;
 	    if(code[i]=="}")
 		paren_level--;
-	    if(!paren_level && code.substr(i, 6) == "class " && (i > 0 ? code[i-1].match('^[\s\}\(\)\[\];\,\:]') : 1)){
+	    if(!paren_level && code.substr(i, 6) == "class " && (i > 0 ? code[i-1].match(/^[\s\}\(\)\[\];\,\:]/) : 1)){
 		let j = code.slice(i).indexOf("{");
 		if(j == -1)
 		    break; // missing paren error
@@ -263,8 +263,8 @@ document.getElementById("codeInput").onkeydown = function(e){
 			j += iOpen+1;
 		    }
 		}
+		code = code.slice(0, i) + "(function(){" + code.slice(i, j) + "; return window." + className + " = " + className + ";}())" + code.slice(j);
 		i = j;
-		code = "(function(){" + code.slice(0, i) + "; return window." + className + " = " + className + ";}())";
 	    }
 	}
 
@@ -281,7 +281,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 	resultPointer.className = "resultPointer";
 	resultPointer.innerText = ">>";
 	
-	var evaluated = stylize_code(preFormattedCode);//document.createElement('span');
+	var evaluated = stylize_code(code);//document.createElement('span');
 	evaluated.className = "evaluated";
 	
 	evaluatedWrapper.appendChild(resultPointer);
