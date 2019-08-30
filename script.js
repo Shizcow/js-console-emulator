@@ -237,10 +237,14 @@ document.getElementById("codeInput").onkeydown = function(e){
 
 	// before we do literally anything, we need to parse the input a bit
 	// reason being: classes don't declare in evals
-	// unless they're wrapped in parens
-	// so we need to find every instance of 'class', and go until {}
-	for(let i=0; i<code.length; ++i){
-	    if(code.substr(i, 6) == "class " && (code[i-1] == undefined || " \t\n{}()".includes(code[i-1]))){
+	// so we need to set window.className = className
+	// but only on the global level, IE if not wrapped in any amount of parens
+	for(let i=0, paren_level=0; i<code.length; ++i){
+	    if(code[i]=="{")
+		paren_level++;
+	    if(code[i]=="}")
+		paren_level--;
+	    if(!paren_level && code.substr(i, 6) == "class " && (i > 0 ? code[i-1].match('^[\s\}\(\)\[\];\,\:]') : 1)){
 		let j = code.slice(i).indexOf("{");
 		if(j == -1)
 		    break; // missing paren error
@@ -260,7 +264,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 		    }
 		}
 		i = j;
-		code = code.slice(0, i) + "; window." + className + " = " + className + "; undefined;" + code.slice(i); // undefined for consistant behavior
+		code = "(function(){" + code.slice(0, i) + "; return window." + className + " = " + className + "}())"; // undefined for consistant behavior
 	    }
 	}
 
