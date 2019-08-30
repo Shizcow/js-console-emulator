@@ -281,7 +281,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 	resultPointer.className = "resultPointer";
 	resultPointer.innerText = ">>";
 	
-	var evaluated = stylize_code(code);//document.createElement('span');
+	var evaluated = stylize_code(preFormattedCode);//document.createElement('span');
 	evaluated.className = "evaluated";
 	
 	evaluatedWrapper.appendChild(resultPointer);
