@@ -267,7 +267,7 @@ document.getElementById("codeInput").onkeydown = function(e){
 		for(let i=0; i<names.length; ++i){
 		    properties += names[i].name + ": {enumerable: true, configurable: false, get: function(){return " + names[i].name + ";}, set: function(val){";
 		    if(names[i].type == "const")
-			properties += "throw new TypeError(\"TypeError: invalid assignment to const `" + names[i].name + "'\")";
+			properties += "throw new TypeError(\"invalid assignment to const `" + names[i].name + "'\");";
 		    if(names[i].type == "let" || names[i].type == "class")
 			properties += "return " + names[i].name + " = val;"
 		    properties += "}}";
